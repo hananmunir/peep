@@ -19,6 +19,7 @@
     "react-bootstrap": "^2.7.4",
     "react-dom": "^18.2.0",
     "react-scroll": "^1.8.9",
+    "smooth-scrollbar": "^8.8.3",
     "smooth-scrollbar-react": "^2.4.1",
     "three": "^0.152.2"
   },

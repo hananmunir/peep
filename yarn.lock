@@ -2473,7 +2473,7 @@
   "resolved" "https://registry.npmjs.org/smooth-scrollbar-react/-/smooth-scrollbar-react-2.4.1.tgz"
   "version" "2.4.1"
 
-"smooth-scrollbar@^8.0.0":
+"smooth-scrollbar@^8.0.0", "smooth-scrollbar@^8.8.3":
   "integrity" "sha512-1/mTQx0PixUP9cvPNO+41imKPvfsLvDuNOLX8kOzXugibFXXH9L5Nc5DcDzdJWc4Qw2w3ROZZ152dCAJ4Sd+zw=="
   "resolved" "https://registry.npmjs.org/smooth-scrollbar/-/smooth-scrollbar-8.8.3.tgz"
   "version" "8.8.3"
