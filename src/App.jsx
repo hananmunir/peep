@@ -11,6 +11,22 @@ gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const [changeColor, setChangeColor] = useState(false);
+  const scrollSpeed = 2; // Adjust this value to control the scroll speed
+
+  useEffect(() => {
+    const container = document;
+
+    const handleScroll = () => {
+      container.scrollLeft += scrollSpeed;
+      requestAnimationFrame(handleScroll);
+    };
+
+    // Start the scrolling animation when the component mounts
+    handleScroll();
+
+    // Clean up the animation frame when the component unmounts
+    return () => cancelAnimationFrame(handleScroll);
+  }, []);
 
   return (
     <>

@@ -11,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Model(props) {
   const group = useRef();
   const cameraGroup = useRef();
+  const sceneRef = useRef();
   const { nodes, materials, animations } = useGLTF("/pepe2-transformed.glb");
   const { actions } = useAnimations(animations, group);
   const [textures, setTextures] = useState([
@@ -35,39 +36,41 @@ export default function Model(props) {
     if (cameraGroup.current) {
       const t1 = gsap.timeline();
       const scrollDirection = { value: 0 };
-
+      const scrollDuration = 5; // Adjust this value to control the overall duration of the scroll animation
+      let previousScrollPos = 0;
       t1.to(cameraGroup.current.rotation, {
         y: Math.PI * 2 * 2,
-        duration: 40,
+        duration: 400,
         ease: "power2.easeOut",
-        onUpdate: () => {
-          if (camera.position.z < 1.5) return;
-          camera.position.z += scrollDirection.value;
-        },
       });
 
       ScrollTrigger.create({
         animation: t1,
         trigger: ".trigger",
         start: "top top",
-        end: "+2000px",
-        scrub: 1,
+        end: `+=${window.innerHeight * scrollDuration * 2}`, // Adjust this value to control the total distance of the scroll animation
+        scrub: 2,
+
         pin: true,
         anticipatePin: true,
         onUpdate: (self) => {
-          scrollDirection.value = self.direction === -1 ? -0.02 : 0.02;
+          if (
+            (camera.position.z < 1.5 && self.direction < 0) ||
+            (camera.position.z > 8 && self.direction > 0)
+          ) {
+            return;
+          }
+
+          camera.position.z += self.getVelocity() * 0.00001;
         },
       });
     }
   }, [cameraGroup.current]);
+
   useEffect(() => {
     if (actions["Armature.001|mixamo.com|Layer0"])
       actions["Armature.001|mixamo.com|Layer0"].play();
   }, [actions]);
-
-  // useEffect(() => {
-  //   camera.position.set(0, 1, 3);
-  // }, []);
 
   useEffect(() => {
     setActiveTexture(textures[Math.floor(Math.random() * textures.length)]);
@@ -76,7 +79,7 @@ export default function Model(props) {
   return (
     <group ref={group} {...props} dispose={null}>
       <group ref={cameraGroup}></group>
-      <group name='Scene' scale={[3, 3, 3]}>
+      <group ref={sceneRef} name='Scene' scale={[3, 3, 3]}>
         <group name='Armature001' rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
           <primitive object={nodes.mixamorigHips} />
           <skinnedMesh
