@@ -10,7 +10,7 @@ import "./index.css";
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
-  const [changeColor, setChangeColor] = useState(false);
+  const [index, setIndex] = useState(0);
   const scrollSpeed = 2; // Adjust this value to control the scroll speed
 
   useEffect(() => {
@@ -48,7 +48,7 @@ function App() {
 
             <Suspense fallback={<>Loading..</>}>
               <mesh position={[0, -1, 0]}>
-                <Model changeColor={changeColor} />
+                <Model index={index} />
               </mesh>
             </Suspense>
             <Sparkles
@@ -71,7 +71,10 @@ function App() {
         </Scrollbar>
       </div>
 
-      <Button className='__Button' onClick={() => setChangeColor(!changeColor)}>
+      <Button
+        className='__Button'
+        onClick={() => setIndex(index >= 2 ? 0 : index + 1)}
+      >
         PRESS ME
       </Button>
     </>

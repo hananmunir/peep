@@ -7,20 +7,27 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useControls } from "leva";
 gsap.registerPlugin(ScrollTrigger);
-
-export default function Model(props) {
+const MODALS = ["/pepe2-transformed.glb", "/Superman1.glb", "/devil_1.glb"];
+export default function Model({ index }) {
+  let mixer;
   const group = useRef();
   const cameraGroup = useRef();
   const sceneRef = useRef();
-  const { nodes, materials, animations } = useGLTF("/pepe2-transformed.glb");
-  const { actions } = useAnimations(animations, group);
-  const [textures, setTextures] = useState([
-    "Material.005",
-    "clothes.001",
-    "eye_brown.001",
-    "Feather.001",
-  ]);
-  const [activeTexture, setActiveTexture] = useState("clothes.001");
+  const angel = useGLTF(MODALS[0]);
+  const superman = useGLTF(MODALS[1]);
+  const devil = useGLTF(MODALS[2]);
+  const [currentModal, setCurrentModal] = useState(angel);
+
+  useEffect(() => {
+    if (currentModal) {
+      mixer = new THREE.AnimationMixer(currentModal.scene);
+      mixer.clipAction(currentModal.animations[0]).play();
+    }
+  }, [currentModal]);
+  useFrame((state, delta) => {
+    mixer.update(delta);
+    // console.log(ca);
+  });
   const { camera } = useThree();
 
   useEffect(() => {
@@ -68,19 +75,26 @@ export default function Model(props) {
   }, [cameraGroup.current]);
 
   useEffect(() => {
-    if (actions["Armature.001|mixamo.com|Layer0"])
-      actions["Armature.001|mixamo.com|Layer0"].play();
-  }, [actions]);
-
-  useEffect(() => {
-    setActiveTexture(textures[Math.floor(Math.random() * textures.length)]);
-  }, [props.changeColor]);
+    if (index === 0) {
+      setCurrentModal(angel);
+    } else if (index === 1) {
+      setCurrentModal(superman);
+      superman.scene.position.y -= 0.1;
+    } else if (index === 2) {
+      setCurrentModal(devil);
+    }
+  }, [index]);
 
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} dispose={null}>
       <group ref={cameraGroup}></group>
-      <group ref={sceneRef} name='Scene' scale={[3, 3, 3]}>
-        <group name='Armature001' rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
+      <group
+        ref={sceneRef}
+        name='Scene'
+        scale={currentModal === devil ? [6, 6, 6] : [3, 3, 3]}
+      >
+        <primitive object={currentModal.scene} />
+        {/* <group name='Armature001' rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
           <primitive object={nodes.mixamorigHips} />
           <skinnedMesh
             name='Angel_Crown001'
@@ -132,7 +146,7 @@ export default function Model(props) {
               skeleton={nodes.Mesh1406_1.skeleton}
             />
           </group>
-        </group>
+        </group> */}
       </group>
     </group>
   );
