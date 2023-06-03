@@ -73,13 +73,14 @@ export default function Model({ index }) {
       });
     }
   }, [cameraGroup.current]);
-
+  useEffect(() => {
+    if (superman) superman.scene.position.y -= 0.1;
+  }, [superman]);
   useEffect(() => {
     if (index === 0) {
       setCurrentModal(angel);
     } else if (index === 1) {
       setCurrentModal(superman);
-      superman.scene.position.y -= 0.1;
     } else if (index === 2) {
       setCurrentModal(devil);
     }

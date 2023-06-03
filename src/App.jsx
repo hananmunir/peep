@@ -7,6 +7,7 @@ import Model from "./Pepe2";
 import { Button } from "react-bootstrap";
 import { Scrollbar } from "smooth-scrollbar-react";
 import "./index.css";
+import Loader from "./Loader/Loader";
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
@@ -46,18 +47,19 @@ function App() {
             <directionalLight intensity={1} position={[0, 10, 0]} />
             {/* <OrbitControls /> */}
 
-            <Suspense fallback={<>Loading..</>}>
+            <Suspense fallback={<Loader />}>
               <mesh position={[0, -1, 0]}>
                 <Model index={index} />
               </mesh>
+              <Sparkles
+                count={100}
+                scale={10}
+                size={2}
+                speed={0.4}
+                color={"#000"}
+              />
             </Suspense>
-            <Sparkles
-              count={100}
-              scale={10}
-              size={2}
-              speed={0.4}
-              color={"#000"}
-            />
+
             <Preload all />
           </Canvas>
         </div>
